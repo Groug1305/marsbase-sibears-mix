@@ -1,4 +1,1 @@
-
-print(228)
-print(1488)
-print(1337)
+import NumPy as num

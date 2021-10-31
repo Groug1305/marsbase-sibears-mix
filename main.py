@@ -1,7 +1,5 @@
 import requests
 import operator
-#from operator import itemgetter
-
 
 #def get_info(): # список всех торгующихся пар с ценами и комиссиями
 #    response = requests.get(url="https://yobit.net/api/3/info")
@@ -13,7 +11,6 @@ import operator
 
 
 def get_ticker(coin1="btc", coin2="usd"): # информация о паре 
-    # response = requests.get(url="https://yobit.net/api/3/ticker/eth_btc-xrp_btccc?ignore_invalid=1")
     response = requests.get(url=f"https://yobit.net/api/3/ticker/{coin1}_{coin2}?ignore_invalid=1")
     with open("ticker.txt", "w") as file:
         file.write(response.text)
@@ -105,17 +102,17 @@ def main():
     coin2 = input()
     limit = 2000
     print('Enter amount of coin1')
-    amount = int(input())
+    amount = float(input())
     coin_info = get_ticker(coin1)
     print(coin_info.text)
-    #print(get_depth(coin1))
     real_price = get_trades(coin1, coin2, limit, amount, flag1)
-    if amount == 0:
+    print(amount)
+    avg = coin_info.json()[f"{coin1}_usd"]["avg"]
+    avg_price = amount*avg
+    if real_price/avg_price > 0.45:
         flag = True
     else:
         flag = False
-    avg = coin_info.json()[f"{coin1}_usd"]["avg"]
-    avg_price = amount*avg
     percents = discount(real_price, avg_price, flag, flag1)
     print("discount: ", percents*100, "%")
     print(f"Average price: {avg_price}")
@@ -129,4 +126,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
